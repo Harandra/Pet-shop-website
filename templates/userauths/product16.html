@@ -1,0 +1,175 @@
+{% extends "partials/base.html" %}
+
+{%load static%}
+
+{% block content %}
+<body>
+    <section id="header">
+        <a onclick="document.location='{% url 'core:index' %}';"><img src="{% static "assets/img/logo2.png" %}" class="logo"></a>
+        <div>
+            <ul id="navbar">
+                <li><a href="{% url 'core:index' %}">Home</a></li>
+                <li><a class="active" href="{% url 'userauths:shop' %}">Shop</a></li>
+                <li><a href="{% url 'userauths:blog' %}">Blog</a></li>
+                <li><a href="{% url 'userauths:about' %}">About</a></li>
+                <li><a href="{% url 'userauths:contact' %}">Contact</a></li>
+                <div class="box">
+                    <div class="cart-count">0</div>
+                    <li><abbr title="Cart"><a><i class="fa-solid fa-cart-shopping" id="cart-icon" onclick="redirectIfNotLoggedIn()"></i></a></abbr></li>
+                </div>
+                <div class="cart-new ">
+                    <div class="cart-title">Cart Items</div>
+                    <div class="cart-content">
+                        <!-- <div class="cart-box">
+                            <img src="img/products/p1.png" class="cart-img">
+                            <div class="detail-box">
+                                <div class="cart-food-title">Pedigree</div>
+                                <div class="price-box">
+                                    <div class="cart-price">₹100</div>
+                                    <div class="cart-amt">₹100</div>
+                                </div>
+                                <input type="number"  value="1" class="cart-quantity">
+                            </div>
+                            <i class="fa-solid fa-trash cart-remove" id="cart-remove"></i>
+                        </div>
+                        <div class="cart-box">
+                            <img src="img/products/p2.png" class="cart-img">
+                            <div class="detail-box">
+                                <div class="cart-food-title">Pedigree</div>
+                                <div class="price-box">
+                                    <div class="cart-price">₹100</div>
+                                    <div class="cart-amt">₹100</div>
+                                </div>
+                                <input type="number"  value="1" class="cart-quantity">
+                            </div>
+                            <i class="fa-solid fa-trash cart-remove" id="cart-remove"></i>
+                        </div> -->
+                    </div>
+                    <div class="total">
+                        <div class="total-title">Total</div>
+                        <div class="total-price">₹0</div>
+                    </div>
+                    <section id="paypal-integration">
+                        <div id="paypal-button"></div>
+                        <i class="fa-solid fa-xmark" id="cart-close"></i>
+
+                        <script>
+                            function redirectIfNotLoggedIn() {
+                                // Check if the user is authenticated using JavaScript
+                                var isAuthenticated = {% if request.user.is_authenticated %} true {% else %} false {% endif %};
+                        
+                                if (!isAuthenticated) {
+                                    // Redirect to login page if the user is not logged in
+                                    window.location.href = "{% url 'userauths:sign-in' %}";
+                                } 
+                            }
+                        </script>
+
+                    </section>
+                </div>  
+                {% if request.user.is_authenticated %}
+                <li><abbr title="Logout"><a href="{% url 'userauths:sign-out'%}"><i class="fa-solid fa-user"></i></i></a></abbr></li>    
+                {% else %}
+                <li><abbr title="Login"><a href="{% url 'userauths:sign-in'%}"><i class="fa-solid fa-right-to-bracket"></i></a></abbr></li>
+                {% endif %}  
+            </ul>
+        </div>
+    </section>
+    <section id="prodetails" class="section-p1">
+        <div class="single-pro-image">
+            <img class="food-img" src="{% static "assets/img/products/p16.png" %}">
+        </div>
+        <div class="single-pro-details">
+            <h6>Home / ABZ</h6>
+            <br>
+            <h5 class="food-title">Clothes</h5>
+            <h2>$29.23</h2>
+            <br>
+            <h5 class="food-title">Add to Cart</h5>
+            <i class="fa-solid fa-cart-shopping cart" id="add-cart"></i>
+            <h4>Product Details</h4>
+            <span>Introducing ABZ Pet Couture - where fashion meets function for your stylish furry companions. Our exquisite collection of pet clothes is designed with both flair and practicality in mind, ensuring your pet looks and feels fabulous on every occasion. Crafted from premium fabrics and tailored to perfection, ABZ Pet Couture offers a range of trendy outfits, from cozy sweaters and chic jackets to adorable dresses and dapper bowties. Each garment is thoughtfully designed to provide comfort, freedom of movement, and protection from the elements, allowing your pet to strut their stuff with confidence and flair. Whether you're dressing up for a special event or simply making a fashion statement on your daily walks, ABZ Pet Couture has the perfect ensemble to suit your pet's unique personality and style. Trust ABZ for pet clothes that combine fashion-forward design, quality craftsmanship, and unbeatable comfort, so your furry friend can step out in style and turn heads wherever they go.</span>
+        </div>
+    </section>
+    <section id="product1" class="section-p1">  
+        <h2>Featured Products</h2>
+        <p>All Pet Products are Available</p>
+        <div class="pro-container">
+            <div class="pro">
+                <img src="{% static "assets/img/products/p9.png" %}">
+                <div class="des">
+                    <span>Happy Cat</span>
+                    <h5>Litter Sand</h5>
+                    <div class="star">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <h4>₹100</h4>
+                </div>
+                <a href="#"><i class="fa-solid fa-cart-shopping cart"></i></a>
+            </div>
+            <div class="pro">
+                <img src="{% static "assets/img/products/p10.png" %}">
+                <div class="des">
+                    <span>ABZ</span>
+                    <h5>Toys</h5>
+                    <div class="star">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <h4>₹100</h4>
+                </div>
+                <i class="fa-solid fa-cart-shopping cart"></i>
+            </div>
+            <div class="pro">
+                <img src="{% static "assets/img/products/p11.png" %}">
+                <div class="des">
+                    <span>ABZ</span>
+                    <h5>Pet Cage    </h5>
+                    <div class="star">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <h4>₹100</h4>
+                </div>
+                <i class="fa-solid fa-cart-shopping cart"></i>
+            </div>
+            <div class="pro">
+                <img src="{% static "assets/img/products/p12.png" %}">
+                <div class="des">
+                    <span>ABZ</span>
+                    <h5>Comb</h5>
+                    <div class="star">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <h4>₹100</h4>
+                </div>
+                <i class="fa-solid fa-cart-shopping cart"></i>
+            </div>
+        </div>
+    </section>
+    <section id="newsletter" class="section-p1 section-m1">
+        <div class="newstext">
+            <h4>Sign Up For Newsletters</h4>
+            <p>Get E-mail updates about our latest shop and <span>special offers</span></p>
+        </div>
+        <div class="form">
+            <input type="text" placeholder="Your email address">
+            <button class="normal">Sign Up</button>
+        </div>
+    </section>
+
+    {% endblock content %}

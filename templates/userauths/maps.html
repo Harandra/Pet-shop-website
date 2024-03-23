@@ -1,0 +1,164 @@
+{% extends "partials/base.html" %}
+
+{%load static%}
+
+{% block content %}
+
+<body>
+    <section id="header">   
+        <a onclick="document.location='{% url 'core:index' %}';"><img src="{% static 'assets/img/logo2.png' %}" class="logo"></a>
+        <div>
+            <ul id="navbar">
+                <li><a class="active" href="{% url 'core:index' %}">Home</a></li>
+                <li><a href="{% url 'userauths:shop' %}">Shop</a></li>
+                <li><a href="{% url 'userauths:blog' %}">Blog</a></li>
+                <li><a href="{% url 'userauths:about' %}">About</a></li>
+                <li><a href="{% url 'userauths:contact' %}">Contact</a></li>
+                <div class="box">
+                    <div class="cart-count">0</div>
+                    <li><abbr title="Cart"><a><i class="fa-solid fa-cart-shopping" onclick="redirectIfNotLoggedIn()"  id="cart-icon"></i></a></abbr></li>
+                </div>
+                <div class="cart-new ">
+                    <div class="cart-title">Cart Items</div>
+                    <div class="cart-content">
+                        <!-- <div class="cart-box">
+                            <img src="img/products/p1.png" class="cart-img">
+                            <div class="detail-box">
+                                <div class="cart-food-title">Pedigree</div>
+                                <div class="price-box">
+                                    <div class="cart-price">₹100</div>
+                                    <div class="cart-amt">₹100</div>
+                                </div>
+                                <input type="number"  value="1" class="cart-quantity">
+                            </div>
+                            <i class="fa-solid fa-trash cart-remove" id="cart-remove"></i>
+                        </div>
+                        <div class="cart-box">
+                            <img src="img/products/p2.png" class="cart-img">
+                            <div class="detail-box">
+                                <div class="cart-food-title">Pedigree</div>
+                                <div class="price-box">
+                                    <div class="cart-price">₹100</div>
+                                    <div class="cart-amt">₹100</div>
+                                </div>
+                                <input type="number"  value="1" class="cart-quantity">
+                            </div>
+                            <i class="fa-solid fa-trash cart-remove" id="cart-remove"></i>
+                        </div> -->
+                    </div>
+                    <div class="total">
+                        <div class="total-title">Total</div>
+                        <div class="total-price">0</div>
+                    </div>
+                    <section id="paypal-integration">
+                        <div id="paypal-button"></div>
+                        <i class="fa-solid fa-xmark" id="cart-close"></i>
+
+                        <script>
+                            function redirectIfNotLoggedIn() {
+                                // Check if the user is authenticated using JavaScript
+                                var isAuthenticated = {% if request.user.is_authenticated %} true {% else %} false {% endif %};
+                        
+                                if (!isAuthenticated) {
+                                    // Redirect to login page if the user is not logged in
+                                    window.location.href = "{% url 'userauths:sign-in' %}";
+                                } 
+                            }
+                        </script>
+                    </section>
+                </div>  
+                {% if request.user.is_authenticated %}
+                <li><abbr title="Logout"><a href="{% url 'userauths:sign-out'%}"><i class="fa-solid fa-user"></i></i></a></abbr></li>    
+                {% else %}
+                <li><abbr title="Login"><a href="{% url 'userauths:sign-in'%}"><i class="fa-solid fa-right-to-bracket"></i></a></abbr></li>
+                {% endif %}
+            </ul>
+        </div>
+    </section>
+    <h1 id="newtitle">Veterinary Hospitals Near Me</h1>
+    <div id="map"></div>
+
+    <script>
+        function initMap() {
+            // Initialize map
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15 // Zoom level
+            });
+
+            // Try to get user's location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    map.setCenter(pos);
+
+                    // Mark user's location
+                    var userMarker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                        title: 'Your Location'
+                    });
+
+                    // Search for nearby veterinary hospitals based on user's location
+                    var request = {
+                        location: pos,
+                        radius: '5000', // Search radius in meters
+                        type: ['veterinary_care'] // Corrected place type
+                    };
+
+                    var service = new google.maps.places.PlacesService(map);
+                    service.nearbySearch(request, function (results, status) {
+                        if (status == google.maps.places.PlacesServiceStatus.OK) {
+                            for (var i = 0; i < results.length; i++) {
+                                createMarker(map, results[i], 'http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+                            }
+                        }
+                    });
+                }, function () {
+                    // Handle geolocation error
+                    handleLocationError(true, map.getCenter(), map);
+                });
+            } else {
+                // Browser doesn't support geolocation
+                handleLocationError(false, map.getCenter(), map);
+            }
+        }
+
+        // Function to create markers for each place found
+        function createMarker(map, place, iconUrl) {
+            var marker = new google.maps.Marker({
+                map: map,
+                position: place.geometry.location,
+                icon: iconUrl,
+                title: place.name
+            });
+
+            var infowindow = new google.maps.InfoWindow();
+            google.maps.event.addListener(marker, 'click', function () {
+                infowindow.setContent('<strong>' + place.name + '</strong><br>' + place.vicinity);
+                infowindow.open(map, this);
+            });
+        }
+
+        // Function to handle geolocation errors
+        function handleLocationError(browserHasGeolocation, pos, map) {
+            var infoWindow = new google.maps.InfoWindow();
+            infoWindow.setPosition(pos);
+            infoWindow.setContent(browserHasGeolocation ?
+                'Error: The Geolocation service failed.' :
+                'Error: Your browser doesn\'t support geolocation.');
+            infoWindow.open(map);
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBywpbC9AmsaZ5USuhX-rF-uOnTmDAxBxs&libraries=places&callback=initMap"></script>
+    <section class="emergency">
+        <p>In case any pet emergency contact <span>Blue Cross : 0300 790 9903</span></p>
+        <p>In case of product queries contact <span>+91 1234567890</span></p>
+        <p>Mail to : <a href="mailto:PetShop@hotmail.com"> PetShop@hotmail.com</a> </p>
+    </section>
+    
+{% endblock content %}
